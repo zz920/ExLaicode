@@ -1,0 +1,35 @@
+// https://developer.chrome.com/extensions/manifest
+{
+  /*
+    you can do whatever you want. SERIOUSLY.
+  */
+
+  "manifest_version" : 2,
+  "name" : "Laicode extension",
+  "version" : "0.1",
+  "author" : ["Bowen Zhi"],
+
+  "description" : "Laicode enhanced extension",
+  "icons" : {
+    "16" : "img/icon16.png",
+    "48" : "img/icon48.png",
+    "128" : "img/icon128.png"
+  },
+  //"default_locale" : "en",
+
+  "permissions" : [
+    "cookies",
+    "http://code.laioffer.com/plan"
+  ],
+ 
+  "content_scripts" : [
+      {
+        "matches" : ["http://code.laioffer.com/plan"],
+        "js" : ["extension.js"]
+      }
+  ],
+
+  "browser_action" : {
+    "default_title" : "Laicode extension"
+  }
+}
