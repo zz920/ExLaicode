@@ -1,0 +1,88 @@
+class CookieBuilder():
+    """
+    # A cookie builder for cookie, if you want to maintain the default value of the filed, please leave it blank.
+    """
+    _filed = ["url", "value", "setDomain", "path", "secure", "httpOnly", "sameSite", "expirationDate", "storeId"]
+    _attr = {}
+
+    # String
+    def setUrl(self, url):
+        """ The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie. If host permissions for this URL are not specified in the manifest file, the API call will fail. """
+        self._attr["url"] = url
+
+    # String, Optional
+    def setName(self, name):
+        """ The name of the cookie. Empty by default if omitted. """
+        self._attr["name"] = name
+
+    # String , Optional
+    def setValue(self, value):
+        """ The value of the cookie. Empty by default if omitted. """
+        self._attr["value"] = value
+
+    # String, Optional
+    def setDomain(self, domain):
+        """ The domain of the cookie. If omitted, the cookie becomes a host-only cookie. """
+        self._attr["setDomain"] = domain
+
+    # String, Optional
+    def setPath(self, path):
+        """  The path of the cookie. Defaults to the path portion of the url parameter. """
+        self._attr['path'] = path
+
+    # Boolean, Optional
+    def setSecure(self, secure):
+        """ Whether the cookie should be marked as Secure. Defaults to false. """
+        self._attr['secure'] = secure
+
+    # Boolean, Optional
+    def setHttpOnly(self, httponly):
+        """ Whether the cookie should be marked as HttpOnly. Defaults to false. """
+        self._attr['httpOnly'] = httponly
+
+    # Samesitestatus, Optional
+    def setSameSite(self, samesitestatus):
+        """ The cookie's same-site status: defaults to 'no_restriction'. """
+        self._attr['sameSite'] = samesitestatus
+
+    # Double, Optional
+    def setExpirationDate(self, date):
+        """ The expiration date of the cookie as the number of seconds since the UNIX epoch. If omitted, the cookie becomes a session cookie. """
+        self._attr['expirationDate'] = date
+
+    # String, Optional
+    def setStorId(self, id):
+        """ The ID of the cookie store in which to set the cookie. By default, the cookie is set in the current execution context's cookie store. """
+        self._attr['storeId'] = id
+
+    def isValid(self):
+        """ check the builder is ready for a cookie. """        
+        if "url" not in self._attr:
+            return False
+        return True
+
+    def getCookie(self):
+        """ return a cookie. """
+        result = {}
+        if not self.isValid():
+            print("Warning: the cookie is illegal.")
+            return result
+        # copy attr dict
+        for attr in self._attr:
+            result[attr] = self._attr[attr] 
+        return result
+
+    def loadChromeCookie(self, chromecookie):
+        """ copy a chromecookie. """
+        self._attr = {}
+        
+        if chromecookie is None:
+            return self
+        
+        if chromecookie == {}:
+            return self
+
+        for attr in self._filed:
+            self._attr[attr] = chromecookie[attr]
+
+        return self

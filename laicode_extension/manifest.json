@@ -19,13 +19,21 @@
 
   "permissions" : [
     "cookies",
-    "http://code.laioffer.com/plan"
+    "*://code.laioffer.com/*"
   ],
- 
+
+  "background": {
+    "scripts" : ["background.js"] 
+  },
+
   "content_scripts" : [
       {
         "matches" : ["http://code.laioffer.com/plan"],
-        "js" : ["extension.js"]
+        "js" : ["plan_extension.js"]
+      },
+      {
+        "matches" : ["http://code.laioffer.com/editor/*"],
+        "js" : ["editor_extension.js"]
       }
   ],
 
