@@ -1,0 +1,11 @@
+def strToJs(text):
+    """ directly use js JSON function.  """
+    return JSON.parse(text)
+
+
+def jsToStr(json_obj):
+    """ directly use js JSON function. """
+    return JSON.stringify(json_obj)
+
+
+

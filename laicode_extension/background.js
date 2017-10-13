@@ -252,13 +252,11 @@ var removeChromeCookie = (ՐՏ_5 = function removeChromeCookie(cookie) {
     value: "remove cookie from chrome."
 }), ՐՏ_5);
 var messageHandler = (ՐՏ_6 = function messageHandler(request, sender, sendResponse) {
-    ՐՏ_print(request);
     if (request.action === "getCookie") {
         function fakeCallback(cookie) {
             var cookieBuilder;
             cookieBuilder = new CookieBuilder();
             cookieBuilder.loadChromeCookie(cookie);
-            ՐՏ_print(cookie, cookieBuilder.getCookie());
             sendResponse(cookieBuilder.loadChromeCookie(cookie).getCookie());
         }
         getChromeCookie(request.url, request.cookieName, fakeCallback);

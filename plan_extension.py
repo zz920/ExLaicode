@@ -1,10 +1,21 @@
 # document for RapydScript: https://github.com/atsepkov/RapydScript
 # some code examples: http://www.rapydscript.com/category/examples/
 from cookie import CookieBuilder
+from util import strToJs, jsToStr
 
 
 PLAN_URL = "http://code.laioffer.com"
 COOKIE_NAME = "plan_record"
+EDITOR_URL = "http://code.laioffer.com/editor/"
+
+
+def fakeCallback(response):
+    """ a make-up call back function for sendGetMessage. """ 
+    prog_index = getProgIndex()
+    entry_dict = getIdEntryPair()
+    cookieBuilder = CookieBuilder()
+    cookieBuilder.loadChromeCookie(response)
+    recoverProblemByCookie(cookieBuilder, entry_dict, prog_index)
 
 
 def getProgIndex():
@@ -31,6 +42,13 @@ def getIdEntryPair():
     return id_entry_pair
 
 
+def resetHrefLink(prob_tr, pid):
+    """ fixed the wheel click can't redirect to editor page. """
+    prob_link_td = prob_tr.firstElementChild
+    a_tag = prob_link_td.firstChild
+    a_tag.href = EDITOR_URL + pid 
+
+
 def resetProblemByTr(prob_tr, pindex, status):
     """ reset the problem to unsloved."""
     prob_prog_td = prob_tr.children[pindex]
@@ -38,12 +56,13 @@ def resetProblemByTr(prob_tr, pindex, status):
 
 
 def resetAllProblem(entry_dict, value_dict, index):
-    """ reset all problems to unsloved """
+    """ reset all problems to unsloved. """
     for pid in entry_dict:
         if pid in value_dict:
             resetProblemByTr(entry_dict[pid], index, value_dict[pid])
         else:
             resetProblemByTr(entry_dict[pid], index, 0)
+        resetHrefLink(entry_dict[pid], pid)
 
 
 def recoverProblemByCookie(cookieBuilder, entry_dict, index):
@@ -52,16 +71,13 @@ def recoverProblemByCookie(cookieBuilder, entry_dict, index):
         resetAllProblem(entry_dict, {}, index)
         cookieBuilder.setUrl(PLAN_URL)
         cookieBuilder.setName(COOKIE_NAME)
-        cookieBuilder.setValue("0")
+        cookieBuilder.setValue('{}')
         cookieBuilder.setExpirationDate(24 * 3600 * 365 * 50)
         sendSetMessage(cookieBuilder.getCookie())
         return
-    print("cookie is not emty.")
     cookie = cookieBuilder.getCookie()
-    # TODO: consider how to deal with the value, eval is forbiddened
-    cookie_value = cookie["value"]
-    print(cookie_value)
-    resetAllProblem(entry_dict, cookie_value, index)
+    finish_code = strToJs(cookie["value"])
+    resetAllProblem(entry_dict, finish_code, index)
 
 
 def sendGetMessage(url, cookiename, callback):
@@ -72,20 +88,8 @@ def sendGetMessage(url, cookiename, callback):
 
 def sendSetMessage(cookie):
     """ broadcast a cookie set request. """
-    print("send Message")
-    print(cookie)
     request = {"action": "setCookie", "cookie": cookie}
     chrome.runtime.sendMessage(request)
-
-
-def fakeCallback(response):
-    
-    prog_index = getProgIndex()
-    entry_dict = getIdEntryPair()
-    print(response)
-    cookieBuilder = CookieBuilder()
-    cookieBuilder.loadChromeCookie(response)
-    recoverProblemByCookie(cookieBuilder, entry_dict, prog_index)
 
 
 sendGetMessage(PLAN_URL, COOKIE_NAME, fakeCallback)

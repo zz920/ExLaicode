@@ -1,4 +1,4 @@
-var ՐՏ_1, ՐՏ_3, ՐՏ_4, ՐՏ_5, ՐՏ_6, ՐՏ_7, ՐՏ_8, ՐՏ_9;
+var ՐՏ_1, ՐՏ_3, ՐՏ_4, ՐՏ_5, ՐՏ_6, ՐՏ_7, ՐՏ_8, ՐՏ_9, ՐՏ_10, ՐՏ_11, ՐՏ_12, ՐՏ_13;
 function enumerate(item) {
     var arr, iter, i;
     arr = [];
@@ -79,9 +79,9 @@ function ՐՏ_eq(a, b) {
     }
     return false;
 }
-var ValueError = (ՐՏ_10 = function ValueError() {
+var ValueError = (ՐՏ_14 = function ValueError() {
     ValueError.prototype.__init__.apply(this, arguments);
-}, ՐՏ_extends(ՐՏ_10, Error), Object.defineProperties(ՐՏ_10.prototype, {
+}, ՐՏ_extends(ՐՏ_14, Error), Object.defineProperties(ՐՏ_14.prototype, {
     __init__: {
         enumerable: true, 
         writable: true, 
@@ -91,9 +91,10 @@ var ValueError = (ՐՏ_10 = function ValueError() {
             self.message = message;
         }
     }
-}), ՐՏ_10);
+}), ՐՏ_14);
 var ՐՏ_modules = {};
 ՐՏ_modules["cookie"] = {};
+ՐՏ_modules["util"] = {};
 
 (function(){
     var __name__ = "cookie";
@@ -252,13 +253,44 @@ var ՐՏ_modules = {};
     ՐՏ_modules["cookie"]["CookieBuilder"] = CookieBuilder;
 })();
 
+(function(){
+    var __name__ = "util";
+    var strToJs = (ՐՏ_3 = function strToJs(text) {
+        return JSON.parse(text);
+    }, Object.defineProperty(ՐՏ_3, "__doc__", {
+        value: "directly use js JSON function."
+    }), ՐՏ_3);
+    var jsToStr = (ՐՏ_4 = function jsToStr(json_obj) {
+        return JSON.stringify(json_obj);
+    }, Object.defineProperty(ՐՏ_4, "__doc__", {
+        value: "directly use js JSON function."
+    }), ՐՏ_4);
+    ՐՏ_modules["util"]["strToJs"] = strToJs;
+
+    ՐՏ_modules["util"]["jsToStr"] = jsToStr;
+})();
+
 var __name__ = "__main__";
-var PLAN_URL, COOKIE_NAME;
+var PLAN_URL, COOKIE_NAME, EDITOR_URL;
 var CookieBuilder = ՐՏ_modules["cookie"].CookieBuilder;
+
+var strToJs = ՐՏ_modules["util"].strToJs;
+var jsToStr = ՐՏ_modules["util"].jsToStr;
 
 PLAN_URL = "http://code.laioffer.com";
 COOKIE_NAME = "plan_record";
-var getProgIndex = (ՐՏ_3 = function getProgIndex() {
+EDITOR_URL = "http://code.laioffer.com/editor/";
+var fakeCallback = (ՐՏ_5 = function fakeCallback(response) {
+    var prog_index, entry_dict, cookieBuilder;
+    prog_index = getProgIndex();
+    entry_dict = getIdEntryPair();
+    cookieBuilder = new CookieBuilder();
+    cookieBuilder.loadChromeCookie(response);
+    recoverProblemByCookie(cookieBuilder, entry_dict, prog_index);
+}, Object.defineProperty(ՐՏ_5, "__doc__", {
+    value: "a make-up call back function for sendGetMessage."
+}), ՐՏ_5);
+var getProgIndex = (ՐՏ_6 = function getProgIndex() {
     var ՐՏitr3, ՐՏidx3, ՐՏupk1;
     var table, head_content, index, th;
     table = document.getElementsByClassName("table")[0];
@@ -273,10 +305,10 @@ var getProgIndex = (ՐՏ_3 = function getProgIndex() {
         }
     }
     throw new ValueError("'Progress' doesn't exist, please verify the code of getProgIndex.");
-}, Object.defineProperty(ՐՏ_3, "__doc__", {
+}, Object.defineProperty(ՐՏ_6, "__doc__", {
     value: "get progress index from thead"
-}), ՐՏ_3);
-var getIdEntryPair = (ՐՏ_4 = function getIdEntryPair() {
+}), ՐՏ_6);
+var getIdEntryPair = (ՐՏ_7 = function getIdEntryPair() {
     var ՐՏitr4, ՐՏidx4;
     var entry_list, id_entry_pair, entry, pid;
     entry_list = document.getElementsByClassName("problem-entry");
@@ -288,17 +320,25 @@ var getIdEntryPair = (ՐՏ_4 = function getIdEntryPair() {
         id_entry_pair[pid] = entry;
     }
     return id_entry_pair;
-}, Object.defineProperty(ՐՏ_4, "__doc__", {
+}, Object.defineProperty(ՐՏ_7, "__doc__", {
     value: "get all problem id entry paris."
-}), ՐՏ_4);
-var resetProblemByTr = (ՐՏ_5 = function resetProblemByTr(prob_tr, pindex, status) {
+}), ՐՏ_7);
+var resetHrefLink = (ՐՏ_8 = function resetHrefLink(prob_tr, pid) {
+    var prob_link_td, a_tag;
+    prob_link_td = prob_tr.firstElementChild;
+    a_tag = prob_link_td.firstChild;
+    a_tag.href = EDITOR_URL + pid;
+}, Object.defineProperty(ՐՏ_8, "__doc__", {
+    value: "fixed the wheel click can't redirect to editor page."
+}), ՐՏ_8);
+var resetProblemByTr = (ՐՏ_9 = function resetProblemByTr(prob_tr, pindex, status) {
     var prob_prog_td;
     prob_prog_td = prob_tr.children[pindex];
     prob_prog_td.className = "problem-progress progress-" + status;
-}, Object.defineProperty(ՐՏ_5, "__doc__", {
+}, Object.defineProperty(ՐՏ_9, "__doc__", {
     value: "reset the problem to unsloved."
-}), ՐՏ_5);
-var resetAllProblem = (ՐՏ_6 = function resetAllProblem(entry_dict, value_dict, index) {
+}), ՐՏ_9);
+var resetAllProblem = (ՐՏ_10 = function resetAllProblem(entry_dict, value_dict, index) {
     var ՐՏitr5, ՐՏidx5;
     var pid;
     ՐՏitr5 = ՐՏ_Iterable(entry_dict);
@@ -309,30 +349,29 @@ var resetAllProblem = (ՐՏ_6 = function resetAllProblem(entry_dict, value_dict,
         } else {
             resetProblemByTr(entry_dict[pid], index, 0);
         }
+        resetHrefLink(entry_dict[pid], pid);
     }
-}, Object.defineProperty(ՐՏ_6, "__doc__", {
-    value: "reset all problems to unsloved"
-}), ՐՏ_6);
-var recoverProblemByCookie = (ՐՏ_7 = function recoverProblemByCookie(cookieBuilder, entry_dict, index) {
-    var cookie, cookie_value;
+}, Object.defineProperty(ՐՏ_10, "__doc__", {
+    value: "reset all problems to unsloved."
+}), ՐՏ_10);
+var recoverProblemByCookie = (ՐՏ_11 = function recoverProblemByCookie(cookieBuilder, entry_dict, index) {
+    var cookie, finish_code;
     if (!cookieBuilder.isValid()) {
         resetAllProblem(entry_dict, {}, index);
         cookieBuilder.setUrl(PLAN_URL);
         cookieBuilder.setName(COOKIE_NAME);
-        cookieBuilder.setValue("{-1 : 3}");
+        cookieBuilder.setValue("{}");
         cookieBuilder.setExpirationDate(24 * 3600 * 365 * 50);
         sendSetMessage(cookieBuilder.getCookie());
         return;
     }
-    ՐՏ_print("cookie is not emty.");
     cookie = cookieBuilder.getCookie();
-    cookie_value = eval(cookie["value"]);
-    ՐՏ_print(cookie_value);
-    resetAllProblem(entry_dict, cookie_value, index);
-}, Object.defineProperty(ՐՏ_7, "__doc__", {
+    finish_code = strToJs(cookie["value"]);
+    resetAllProblem(entry_dict, finish_code, index);
+}, Object.defineProperty(ՐՏ_11, "__doc__", {
     value: "recover the progress label by cookie."
-}), ՐՏ_7);
-var sendGetMessage = (ՐՏ_8 = function sendGetMessage(url, cookiename, callback) {
+}), ՐՏ_11);
+var sendGetMessage = (ՐՏ_12 = function sendGetMessage(url, cookiename, callback) {
     var request;
     request = {
         "action": "getCookie",
@@ -340,29 +379,18 @@ var sendGetMessage = (ՐՏ_8 = function sendGetMessage(url, cookiename, callback
         "cookieName": cookiename
     };
     chrome.runtime.sendMessage(request, callback);
-}, Object.defineProperty(ՐՏ_8, "__doc__", {
+}, Object.defineProperty(ՐՏ_12, "__doc__", {
     value: "broadcast a cookie get request."
-}), ՐՏ_8);
-var sendSetMessage = (ՐՏ_9 = function sendSetMessage(cookie) {
+}), ՐՏ_12);
+var sendSetMessage = (ՐՏ_13 = function sendSetMessage(cookie) {
     var request;
-    ՐՏ_print("send Message");
-    ՐՏ_print(cookie);
     request = {
         "action": "setCookie",
         "cookie": cookie
     };
     chrome.runtime.sendMessage(request);
-}, Object.defineProperty(ՐՏ_9, "__doc__", {
+}, Object.defineProperty(ՐՏ_13, "__doc__", {
     value: "broadcast a cookie set request."
-}), ՐՏ_9);
-function fakeCallback(response) {
-    var prog_index, entry_dict, cookieBuilder;
-    prog_index = getProgIndex();
-    entry_dict = getIdEntryPair();
-    ՐՏ_print(response);
-    cookieBuilder = new CookieBuilder();
-    cookieBuilder.loadChromeCookie(response);
-    recoverProblemByCookie(cookieBuilder, entry_dict, prog_index);
-}
-sendGetMessage(PLAN_URL, COOKIE_NAME, fakeCallback);var ՐՏ_10;
+}), ՐՏ_13);
+sendGetMessage(PLAN_URL, COOKIE_NAME, fakeCallback);var ՐՏ_14;
 

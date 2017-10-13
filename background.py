@@ -18,13 +18,11 @@ def removeChromeCookie(cookie):
 
 def messageHandler(request, sender, sendResponse):
     """ response to the cookie request """
-    print(request)
     if request.action == "getCookie":
         
         def fakeCallback(cookie):
             cookieBuilder = CookieBuilder()
             cookieBuilder.loadChromeCookie(cookie)
-            print(cookie, cookieBuilder.getCookie())
             sendResponse(cookieBuilder.loadChromeCookie(cookie).getCookie())
 
         getChromeCookie(request.url, request.cookieName, fakeCallback)
